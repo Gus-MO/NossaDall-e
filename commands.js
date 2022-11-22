@@ -54,19 +54,22 @@ export async function DeleteGuildCommand(appId, guildId, command) {
     
     if (data) {
       const installedNames = data.map((c) => c['name']);
+      const installedIds = data.map((c) => c['id']);
+      const delId = installedIds[installedNames.indexOf(command['name'])];
       // This is just matching on the name, so it's not good for updates
       if (installedNames.includes(command['name'])) {                                                      
         console.log(`Deleting "${command['name']}"`);
         // API endpoint to get and delet guild commands
-        const endpoint = `applications/${appId}/guilds/${guildId}/commands`;
+        const endpoint = `applications/${appId}/guilds/${guildId}/commands/${delId}`;
         // delete command                                                                                         
         try {                                                                                                   
           await DiscordRequest(endpoint, { method: 'DELETE', body: command });
+	  console.log(`Deleted ${command['name']}`);
         } catch (err) {
           console.error(err);
         }
       } else {
-        console.log(`"${command['name']}" command not installed`);
+        console.log(`"${command['name']}" command not installed or already deleted.`);
       }
     }
   } catch (err) {
@@ -75,6 +78,7 @@ export async function DeleteGuildCommand(appId, guildId, command) {
 	
 }
 
+
 // Simple test command
 export const TEST_COMMAND = {
   name: 'test',
@@ -82,11 +86,17 @@ export const TEST_COMMAND = {
   type: 1,
 };
 
+// Simple test update command
+export const TEST_UPDATE_COMMAND = {
+  name: 'test-update',
+  description: 'Basic guild command to test the update of a message',
+  type: 1,
+};
+
 // Prompt to Dalle
 export const PROMPT_COMMAND = {
   name: 'prompt',
   description: 'Send a prompt to Dalle',
-/*
   options: [
     {
       type: 3,
@@ -95,7 +105,6 @@ export const PROMPT_COMMAND = {
       required: true,
     },
   ],
-*/
   type: 1,
 };
 

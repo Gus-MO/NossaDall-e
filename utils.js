@@ -47,3 +47,69 @@ export function capitalize(str) {
 export function standard_out_path(str) {
   return str.toLowerCase().replaceAll(" ", "_")
 }
+
+export function create_embbed(file_name) {
+  return {
+    //color: 0x0099ff,
+    title: 'file_name',
+    //url: 'https://discord.js.org',
+    //author: {
+    //  name: 'Some name',
+    //  icon_url: 'https://i.imgur.com/AfFp7pu.png',
+    //  url: 'https://discord.js.org',
+    //},
+    //description: 'Some description here',
+    //thumbnail: {
+    //  url: 'https://i.imgur.com/AfFp7pu.png',
+    //},
+    //fields: [
+    //  {
+    //  	name: 'Regular field title',
+    //  	value: 'Some value here',
+    //  },
+    //  {
+    //  	name: '\u200b',
+    //  	value: '\u200b',
+    //  	inline: false,
+    //  },
+    //  {
+    //  	name: 'Inline field title',
+    //  	value: 'Some value here',
+    //  	inline: true,
+    //  },
+    //  {
+    //  	name: 'Inline field title',
+    //  	value: 'Some value here',
+    //  	inline: true,
+    //  },
+    //  {
+    //  	name: 'Inline field title',
+    //  	value: 'Some value here',
+    //  	inline: true,
+    //  },
+    //  ],
+    image: {
+       url: `attachment://${file_name}`,
+    },
+    //timestamp: new Date().toISOString(),
+    //footer: {
+    //  text: 'Some footer text here',
+    //  icon_url: 'https://i.imgur.com/AfFp7pu.png',
+    //},
+  };
+}
+
+export function create_attachment(final_path) {
+  return {
+    filename: final_path,
+    //content_type: 'image/png',
+    //height:,
+    //width:,
+    //id:,
+    //description:,
+    //size:,
+    //url:,
+    //proxy_url:,
+    //ephemeral:,
+  }
+}

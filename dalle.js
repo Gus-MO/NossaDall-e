@@ -38,13 +38,13 @@ function download (url, image_final){
 
 /*-------------------------- Generating image --------------------------*/
 
-export function callDalle (prompt_text, n = 1, size = "1024x1024") {
+export async function callDalle (prompt_text, num = 1, size1 = "1024x1024") {
   // Calling openai
-  //const response = await openai.createImage({
-  const response = openai.createImage({
+  const response = await openai.createImage({
+  //const response = openai.createImage({
     prompt: prompt_text,
-    n: 1,
-    size: "1024x1024",
+    n: num,
+    size: size1,
   });
   var image_url = response.data.data[0].url;
   var image_final = image_path + standard_out_path(prompt_text) + '.png'
@@ -56,5 +56,8 @@ export function callDalle (prompt_text, n = 1, size = "1024x1024") {
   // Downloading picture
   download(image_url, image_final);
 
-  return image_final;
+  return {
+    'image': image_final,
+    'url': image_url,
+  };
 }
