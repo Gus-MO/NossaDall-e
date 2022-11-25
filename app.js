@@ -1,161 +1,52 @@
 /*-------------------------------Imports-------------------------------*/
-import 'dotenv/config';
-import express from 'express';
-import {
-  InteractionType,
-  InteractionResponseType,
-  InteractionResponseFlags,
-  MessageComponentTypes,
-  ButtonStyleTypes,
-} from 'discord-interactions';
-import {
-  VerifyDiscordRequest,
-  DiscordRequest,
-  standard_out_path,
-} from './utils.js';
-import {callDalle} from './dalle.js'
-import {
-  TEST_COMMAND,
-  PROMPT_COMMAND,
-  TEST_UPDATE_COMMAND,
-  HasGuildCommands,
-  DeleteGuildCommand,
-} from './commands.js';
-import {
-  AttachmentBuilder,
-  EmbedBuilder
-} from 'discord.js';
+// Some node utilities
+const fs = require('node:fs');
+const path = require('node:path');
 
-/*----------------------------Creating app-----------------------------*/
-// Create an express app
-const app = express();
-// Get port, or default to 3000
-const PORT = process.env.PORT || 3000;
-// Parse request body and verifies incoming requests using discord-interactions package
-app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
+// Defaults imports
+const dotenv = require('dotenv/config');
+//const express = require('express');
 
-app.post('/interactions', async (req, res) => {
-  // Interaction type and data
-  const { type, id, data } = req.body;
+// Require the necessary discord.js classes
+const { Client, GatewayIntentBits } = require('discord.js');
+const { Events, Collection } = require('discord.js');
 
-  /**
-   * Handle verification requests
-   */
-  if (type === InteractionType.PING) {
-    return res.send({ type: InteractionResponseType.PONG });
+/*----------------------------Declarations-----------------------------*/
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, /*GatewayIntentBits.GuildWebhooks*/] });
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+const imagesPath = path.join(__dirname, 'images');
+
+// Importing the commands
+client.commands = new Collection();
+
+console.log('Checking for commands!');
+for (const file of commandFiles) {
+  const filePath = path.join(commandsPath, file);
+  const command = require(filePath);
+  // Set a new item in the Collection with the key as the command name and the value as the exported module
+  if ('data' in command && 'execute' in command) {
+    client.commands.set(command.data.name, command);
+  } else {
+    console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
   }
+}
 
-  /**
-   * Handle slash command requests
-   * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
-   */
-  if (type === InteractionType.APPLICATION_COMMAND) {
-    const {name} = data;
+// Log in to Discord with your client's token
+client.login(process.env.DISCORD_TOKEN);
 
-    // "test" guild command
-    if (name === 'test') {
-      // Send a message into the channel where command was triggered from
-      return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          // Fetches a random emoji to send from a helper function
-          content: 'hello world ',
-        },
-      });
-    }
-    
-    // "test_update"
-    if (name === 'test-update') {
-      const endpoint = `webhooks/${process.env.APP_ID}/${req.body.token}/messages/@original`;
-      try {
-        await res.send({
-          type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
-	  content: 'Just a test',
-          flags: InteractionResponseFlags.EPHEMERAL,
-        })
-
-	const file = {
-          "id": 0,
-          "description": "Image of a cute little cat",
-          "filename": '../images/boat_on_a_fantasy_river.png'
-	};
-        //const file = new AttachmentBuilder()
-	//  .setFile('images/boat_on_a_fantasy_river.png');
-        const embedFile = new EmbedBuilder()
-	  .setTitle('Boat on a fantasy river')
-	  .setImage('attachment://boat_on_a_fantasy_river.png');
-        
-	console.log(file);
-        // Update ephemeral message
-        await DiscordRequest(endpoint, {
-          method: 'PATCH',
-          body: {
-            content: 'Nice choice ',
-	    embeds: [embedFile],
-            attachment: [file],
-          },
-        })
-        //await DiscordRequest(endpoint, { method: 'DELETE' });
-      } catch (err) {
-        console.error('Error sending message:', err);
-      }
-    }
-
-    // "prompt" guild command
-    if (name === 'prompt') {
-      // Endpoint for updating message
-      const endpoint = `webhooks/${process.env.APP_ID}/${req.body.token}/messages/@original`;
-      // prompt for dalle
-      const prompt_text = req.body.data.options[0].value;
-      // Dall-e interface
-
-      console.log(`Waiting for Dall-e response of ${prompt_text}`);
-      try {
-        await res.send({
-          type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
-	  //content: 'Sending Message',
-          flags: InteractionResponseFlags.EPHEMERAL,
-        })
-
-	const dalleRes = await callDalle(prompt_text);
-	
-
-        //const file = new AttachmentBuilder(dalleRes.image);
-        const embedFile = new EmbedBuilder()
-	  .setTitle(prompt_text)
-	  .setImage(dalleRes.url);
-	  //.setImage(`attachment://${standard_out_path(prompt_text) + ".png"}`);
-        
-        // Update ephemeral message
-        console.log('Got the response');
-        await DiscordRequest(endpoint, {
-          method: 'PATCH',
-          body: {
-            content: `Prompt: ${prompt_text}`,
-	    embeds: [embedFile],
-            //files: [file],
-          },
-        })
-        //await DiscordRequest(endpoint, { method: 'DELETE' });
-      } catch (err) {
-        console.error('Failed on Dall-e comunication', err);
-      }
-    }
+/*--------------------------------Events-------------------------------*/
+for (const file of eventFiles) {
+  const filePath = path.join(eventsPath, file);
+  const event = require(filePath);
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args));
+  } else {
+    client.on(event.name, (...args) => event.execute(...args));
   }
-});
-
-app.listen(PORT, () => {
-  console.log('Listening on port', PORT);
-
-  // Check if guild commands from commands.js are installed (if not, install them)
-  console.log(`Checking installed apps...`);
-  HasGuildCommands(process.env.APP_ID, process.env.GUILD_ID, [
-    TEST_COMMAND,
-    TEST_UPDATE_COMMAND,
-    PROMPT_COMMAND,
-  ]);
-  //DeleteGuildCommand(process.env.APP_ID, process.env.GUILD_ID, [
-  //  //PROMPT_COMMAND,
-  //  //CHALLENGE_COMMAND,
-  //]);
-});
+}
+//const filePath = path.join(__dirname, 'events', 'interactionCreate.js');
+//const event = require(filePath);
+//client.on(event.name, (...args) => event.execute(...args));

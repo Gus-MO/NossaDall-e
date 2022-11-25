@@ -1,10 +1,19 @@
 /*------------------------------ Imports -------------------------------*/
-import 'dotenv/config'
-import { Configuration, OpenAIApi } from "openai";
-import * as https from 'https';
-import {Transform} from 'stream';
-import * as fs from 'fs';
-import { standard_out_path } from './utils.js';
+// Some node utilities
+const fs = require('node:fs');
+const path = require('node:path');
+const https = require('https');
+const {Transform} = require('stream').Transform;
+
+// Defaults imports
+const dotenv = require('dotenv/config');
+
+
+// OpenAI
+const { Configuration, OpenAIApi } = require("openai");
+
+// Local
+const { standard_out_path, get_current_out_date} = require('./utils.js');
 
 /*-------------------------- Some Definitions --------------------------*/
 
@@ -15,7 +24,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 // Personal
-const image_path = 'images/'
+const image_path = path.join(__dirname, 'images/');
 
 // Functions
 function download (url, image_final){
@@ -38,7 +47,7 @@ function download (url, image_final){
 
 /*-------------------------- Generating image --------------------------*/
 
-export async function callDalle (prompt_text, num = 1, size1 = "1024x1024") {
+exports.callDalle = async function callDalle (prompt_text, num = 1, size1 = "1024x1024") {
   // Calling openai
   const response = await openai.createImage({
   //const response = openai.createImage({
@@ -47,7 +56,7 @@ export async function callDalle (prompt_text, num = 1, size1 = "1024x1024") {
     size: size1,
   });
   var image_url = response.data.data[0].url;
-  var image_final = image_path + standard_out_path(prompt_text) + '.png'
+  var image_final = image_path + get_current_out_date() + '_' + standard_out_path(prompt_text) + '.png'
   
   // Logs
   console.log(`Generated image link:\t ${image_url} \n\n`)
