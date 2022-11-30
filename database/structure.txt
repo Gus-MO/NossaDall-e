@@ -1,0 +1,23 @@
+-------------------- REQUESTS --------------------
+
+Record of every request sended to the bot.
+
+REQUEST_ID: INT KEY
+CREATED_AT: DATETIME
+USER_ID: INT
+GUILD_ID: INT
+---------------------- USERS ---------------------
+
+List of the users who already sended a resquest on this
+bot.
+
+USER_ID: INT KEY
+DISCORD_ID: INT
+USER_NAME: TEXT
+--------------------- GUILDS ---------------------
+
+List of the guilds which used this version of the bot.
+
+GUILD_ID: INT KEY
+DISCORD_ID: INT
+GUILD_NAME: TEXT

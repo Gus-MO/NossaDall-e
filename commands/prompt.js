@@ -1,6 +1,9 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { callDalle } = require('../dalle.js');
+const { callDalle } = require('../openai.js');
 const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
+
+// Database
+const { create_request } = require('../database/database.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -34,6 +37,21 @@ module.exports = {
       embeds: [embedFile],
       //attachment: [file],
     });
+  
+    // Storing in DataBase
+    const request = {
+      user: {
+        DISCORD_ID: interaction.user.id,
+	USER_NAME: interaction.user.username,
+      },
+      guild: {
+	DISCORD_ID: interaction.guild.id,
+	GUILD_NAME: interaction.guild.name,
+      },
+    };
+
+    const request_response = await create_request(request);
+    console.log(`Request ${request_response.REQUEST_ID}: created!`)
   },
 };
 
