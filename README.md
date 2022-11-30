@@ -27,9 +27,11 @@ them.
 
 #### Cloning and Installing
 
-For starting hosting the bot clone this respository:
+For starting hosting the bot fork this respository, then clone it to a local directory:
 
-    git clone https://github.com/Gus-MO/NossaDall-e.git
+Example:
+
+    git clone https://github.com/Your-Name/NossaDall-e.git
 
 Install the dependencies:
 
@@ -40,10 +42,11 @@ and finaly proceed with npm:
 
     npm install
 
+Create a local file called `images`.
+
 #### Creating a bot
 
-
-for launching the bot just run the `app.js` file:
+For launching the bot just run the `app.js` file:
 
     node app.js
 
@@ -51,11 +54,17 @@ for launching the bot just run the `app.js` file:
 
 ## Contributing
 
+There is many ways you can contribute with the project, simplily adding the bot to your server and using it is a 
+
+### 
+
 ### Project Milestones and tasks
 
 - [x] Get to a first working model
-- [] Implement users management
-- [] Add [Open AI Moderation](https://beta.openai.com/docs/guides/moderation/overview) to prompt texts
+- [ ] Implement users management
+- [ ] Add [Open AI Moderation](https://beta.openai.com/docs/guides/moderation/overview) to prompt texts
+
+For complete list of tasks visit the [docs/taks.md](docs/tasks.md)
 
 ## Acknowledgements
 

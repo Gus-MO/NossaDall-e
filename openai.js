@@ -48,6 +48,14 @@ function download (url, image_final){
 /*-------------------------- Generating image --------------------------*/
 
 exports.callDalle = async function callDalle (prompt_text, num = 1, size1 = "1024x1024") {
+  // Moderation
+  console.log('Checking text');
+  const moderation = await exports.moderate_text(prompt_text);
+  if (moderation.data.results[0].flagged) {
+    console.log('inappropriate');
+    return 'The inserted prompt was classified as inappropriate. Unable to get a response';
+  }
+
   // Calling openai
   const response = await openai.createImage({
   //const response = openai.createImage({
@@ -69,4 +77,14 @@ exports.callDalle = async function callDalle (prompt_text, num = 1, size1 = "102
     'image': image_final,
     'url': image_url,
   };
+}
+
+/*------------------------------Moderation-----------------------------*/
+
+exports.moderate_text = async function moderate_text (inText) {
+  const response = await openai.createModeration({
+    input: inText
+  })
+
+  return response;
 }

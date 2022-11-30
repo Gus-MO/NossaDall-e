@@ -22,6 +22,15 @@ module.exports = {
     // Calling Dall-e
     const dalleRes = await callDalle(prompt_text);
 
+    // On moderation Failed
+    if (typeof dalleRes === 'string' || dalleRes instanceof String){
+    console.log('Got the response');
+      await interaction.editReply({
+        content: dalleRes,
+      });
+      return ;
+    }
+
     // Embedding files
     //const file = new AttachmentBuilder(dalleRes.image);
     const embedFile = new EmbedBuilder()
