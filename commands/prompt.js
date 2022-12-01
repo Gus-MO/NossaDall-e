@@ -17,36 +17,6 @@ module.exports = {
     // interaction.member is the GuildMember object, which represents the user in the specific guild
     await interaction.deferReply();
 
-    const prompt_text = interaction.options.getString('prompt_text')
-    
-    // Calling Dall-e
-    const dalleRes = await callDalle(prompt_text);
-
-    // On moderation Failed
-    if (typeof dalleRes === 'string' || dalleRes instanceof String){
-    console.log('Got the response');
-      await interaction.editReply({
-        content: dalleRes,
-      });
-      return ;
-    }
-
-    // Embedding files
-    //const file = new AttachmentBuilder(dalleRes.image);
-    const embedFile = new EmbedBuilder()
-      .setTitle(prompt_text)
-      .setImage(dalleRes.url);
-	
-    // Update ephemeral message
-    console.log('Got the response');
-
-    console.log(`Waiting for Dall-e response of ${prompt_text}`);
-    await interaction.editReply({
-      content: 'Nice choice ',
-      embeds: [embedFile],
-      //attachment: [file],
-    });
-  
     // Storing in DataBase
     const request = {
       user: {
@@ -60,7 +30,43 @@ module.exports = {
     };
 
     const request_response = await create_request(request);
-    console.log(`Request ${request_response.REQUEST_ID}: created!`)
+    console.log(request_response.text);
+
+    if (request_response.response) {
+      const prompt_text = interaction.options.getString('prompt_text')
+      
+      // Calling Dall-e
+      const dalleRes = await callDalle(prompt_text);
+
+      // On moderation Failed
+      if (typeof dalleRes === 'string' || dalleRes instanceof String){
+      console.log('Got the response');
+        await interaction.editReply({
+          content: dalleRes,
+        });
+        return ;
+      }
+
+      // Embedding files
+      //const file = new AttachmentBuilder(dalleRes.image);
+      const embedFile = new EmbedBuilder()
+        .setTitle(prompt_text)
+        .setImage(dalleRes.url);
+          
+      // Update ephemeral message
+      console.log('Got the response');
+
+      console.log(`Waiting for Dall-e response of ${prompt_text}`);
+      await interaction.editReply({
+        content: await request_response.text,
+        embeds: [embedFile],
+        //attachment: [file],
+      });
+    } else {
+      await interaction.editReply({
+        content: await request_response.text,
+      });
+    }
   },
 };
 

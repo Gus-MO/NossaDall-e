@@ -8,6 +8,7 @@
 
 - [x] Get to a first working model
 - [x] Get a working database
+- [x] Add [Open AI Moderation](https://beta.openai.com/docs/guides/moderation/overview) to prompt texts
 
 ## Already ongoing:
 
@@ -15,7 +16,7 @@
 
 ## Need to start:
 
-- [ ] Add [Open AI Moderation](https://beta.openai.com/docs/guides/moderation/overview) to prompt texts
+- [ ] Add user uses limitation
 - [ ] Implement users management
 - [ ] Add better configuration of images
 - [ ] Implement image edit

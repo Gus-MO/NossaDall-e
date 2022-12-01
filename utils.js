@@ -6,3 +6,7 @@ exports.get_current_out_date = function get_current_out_date(){
   const outDate = new Date();
   return outDate.toISOString();
 }
+
+//exports.check_string = function check_string(str){
+//  if (str)
+//}
