@@ -5,6 +5,9 @@ const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 // Database
 const { create_request } = require('../database/database.js');
 
+// Utils
+const { check_string } = require('../utils.js');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('prompt')
@@ -33,7 +36,8 @@ module.exports = {
     console.log(request_response.text);
 
     if (request_response.response) {
-      const prompt_text = interaction.options.getString('prompt_text')
+      const prompt_text = check_string(interaction.options.getString('prompt_text'));
+      
       
       // Calling Dall-e
       const dalleRes = await callDalle(prompt_text);

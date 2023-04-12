@@ -7,6 +7,22 @@ exports.get_current_out_date = function get_current_out_date(){
   return outDate.toISOString();
 }
 
-//exports.check_string = function check_string(str){
-//  if (str)
-//}
+exports.check_string = function check_string(str){
+  /*
+   * Checks if the input is only aA-zZ or number
+   */
+  // Letters and numbers
+  const regexFull = RegExp('^[a-zA-Z0-9]+$');
+  const regexLetter = RegExp('[a-zA-Z0-9]');
+
+  var newStr = `${str}`;
+
+  if (!regexFull.test(newStr)) {
+    for (const letter of newStr) {
+      if (!regexLetter.test(letter))
+        newStr = newStr.replace(letter, ' ');
+    }
+  }
+
+  return newStr;
+}

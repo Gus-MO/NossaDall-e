@@ -100,8 +100,6 @@ exports.create_guild = async function creat_guild(guild) {
 exports.check_limit = async function check_limit(user, guild) {
   console.log('Checking request limit');
 
-  console.log(user.DISCORD_ID);
-  console.log(guild.DISCORD_ID);
   const users_amount = await db.sequelize.query(
     `SELECT count(Requests.REQUEST_ID)
      FROM Requests
