@@ -24,11 +24,11 @@ module.exports = {
     const request = {
       user: {
         DISCORD_ID: interaction.user.id,
-	USER_NAME: interaction.user.username,
+	      USER_NAME: interaction.user.username,
       },
       guild: {
-	DISCORD_ID: interaction.guild.id,
-	GUILD_NAME: interaction.guild.name,
+	      DISCORD_ID: interaction.guild.id,
+	      GUILD_NAME: interaction.guild.name,
       },
     };
 
@@ -36,6 +36,7 @@ module.exports = {
     console.log(request_response.text);
 
     if (request_response.response) {
+      // Checking if is a string with a given default
       const prompt_text = check_string(interaction.options.getString('prompt_text'));
       
       

@@ -17,6 +17,12 @@ module.exports = {
     } catch (error) {
       console.error(`Error executing ${interaction.commandName}`);
       console.error(error);
+
+      // Sending to Discord chat the error
+      await interaction.editReply({
+        content: await `Error ${error.response.status}: ${error.response.statusText}\nTalk with the bot manager`,
+      });
+
     }
   },
 };

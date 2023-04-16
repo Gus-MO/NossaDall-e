@@ -10,6 +10,7 @@
 - [x] Get a working database
 - [x] Add [Open AI Moderation](https://beta.openai.com/docs/guides/moderation/overview) to prompt texts
 - [x] Add user uses limitation
+- [x] Add text inspection(only chars and numbers)
 
 ## Already ongoing:
 
@@ -17,7 +18,6 @@
 
 ## Need to start:
 
-- [ ] Add text inspection(only chars and numbers)
 - [ ] Implement users management
 - [ ] Add better configuration of images
 - [ ] Implement image edit
