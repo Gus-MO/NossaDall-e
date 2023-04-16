@@ -44,6 +44,11 @@ and finaly proceed with npm:
 
 Create a local file called `images`.
 
+run the database creator:
+
+    cd database
+    node create_database.js
+
 #### Creating a bot
 
 For launching the bot just run the `app.js` file:
@@ -54,9 +59,8 @@ For launching the bot just run the `app.js` file:
 
 ## Contributing
 
-There is many ways you can contribute with the project, simplily adding the bot to your server and using it is a 
-
-### 
+There is many ways you can contribute with the project, simplily adding the bot to your server and using it is a
+good start. Reporting errors, and giving new ideias.
 
 ### Project Milestones and tasks
 
