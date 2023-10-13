@@ -25,6 +25,8 @@ them.
 
 #### Cloning and Installing
 
+> WWarning: The use of DALL-E isn't free, so you'll need to obtain a personal key for access to the bot.
+
 For starting hosting the bot fork this respository, then clone it to a local directory:
 
 Example:
